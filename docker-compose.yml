@@ -1,0 +1,13 @@
+services:
+  omnilingua-dev:
+    build: { context: ., target: dev }
+    ports: ["8080:8080"]
+    volumes: [".:/app"]
+    profiles: ["dev"]
+  omnilingua-prod:
+    build: { context: ., target: prod }
+    ports: ["80:80"]
+    restart: unless-stopped
+    profiles: ["prod"]
+# dev : docker compose --profile dev up --build
+# prod: docker compose --profile prod up --build -d

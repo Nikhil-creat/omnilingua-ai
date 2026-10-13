@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a0f1d"><meta name="description" content="OmniLingua AI: agentic, voice-enabled, multi-provider AI translator">
+<title>OmniLingua AI</title>
+<link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head><body>
+<canvas id="bg"></canvas>
+<nav class="g">
+ <span class="pulse"></span><span class="logo">OmniLingua AI</span>
+ <span id="prov" class="badge bad">No API key</span>
+ <select id="model" title="Model (auto-filled from your key)" style="max-width:190px"></select>
+ <span class="sp"></span>
+ <span class="dots" id="dots"></span>
+ <button id="bHist" title="History">🕘</button><button id="bSet" title="Settings">⚙</button>
+</nav>
+
+<main>
+<section class="g pan">
+ <div class="row"><select id="src"><option value="auto">🌐 Auto-detect</option></select><button id="swap" title="Swap (Alt+S)">⇄</button><select id="tgt"></select></div>
+ <div class="row"><div class="seg" id="modes"><button data-m="fast">⚡ Fast</button><button data-m="agentic">🧠 Agentic</button><button data-m="deep">🔬 Deep</button></div></div>
+ <div class="row"><select id="tone"><option value="auto">Tone: auto</option><option>formal</option><option>casual</option><option>friendly</option><option>professional</option><option>poetic</option></select>
+  <select id="domainSel"><option value="auto">Domain: auto</option><option>Legal</option><option>Medical</option><option>Technical</option><option>Business</option><option>Slang</option><option>Literary</option><option>Academic</option></select></div>
+ <textarea id="in" placeholder="Type, speak, paste, or drop an image / PDF / .txt / .srt…  (Ctrl+Enter to translate)"></textarea>
+ <div class="row mono"><span id="cnt">0 chars</span><span class="sp"></span><button id="paste">📥 Paste</button><button id="clr">✕ Clear</button></div>
+ <div class="row"><button id="mic">🎙 Voice</button><label class="row m"><input type="checkbox" id="interp"> Live interpreter</label><small id="interim"></small></div>
+ <canvas class="w" id="wave" width="600" height="40"></canvas>
+ <div class="row">
+  <label class="btn drop">📄 File / OCR<input type="file" id="file" accept="image/*,.pdf,.txt,.md,.srt,.vtt,.csv" hidden></label>
+  <label class="btn drop">📷 Camera<input type="file" id="cam" accept="image/*" capture="environment" hidden></label>
+  <select id="ocrLang" title="OCR language"></select></div>
+ <div class="scanbox" id="sb"><img id="oimg" alt=""><div class="grid" id="grid"></div><div class="scanline" id="sl"></div><canvas id="ov"></canvas></div>
+ <small id="ocrs"></small>
+ <div class="row"><label class="btn drop">📚 Glossary / TM<input type="file" id="gl" accept=".json,.tmx,.xml,.csv,.txt" hidden></label><button id="tmExp">⬇ TM</button><small id="gls"></small></div>
+ <div class="row"><input id="qt" placeholder="Quick term: source => target" style="flex:1;min-width:150px"><button id="qtb">＋ Add</button></div>
+ <div class="m" style="font-size:12px">Compare in more languages:</div><div class="chips" id="chips"></div>
+ <button id="go" class="pri">⚡ Translate</button>
+</section>
+
+<section class="g pan">
+ <div class="row"><span class="tag" id="dom">domain: —</span><span class="tag" id="reg">register: —</span><span class="bar"><i id="conf"></i></span><small id="cs">confidence</small></div>
+ <div class="pips" id="pips"></div>
+ <div class="mono" id="steps">Pipeline idle</div>
+ <div id="out"></div>
+ <div class="row"><button id="cpy">📋 Copy</button><button id="spk">🔊 Speak</button><button id="alt">🔀 Variants</button><button id="bt">↩ Back-translate</button><button id="rom">Aa Romanize</button><button id="savetm">💾 To TM</button><button id="exp">⬇ Export</button><button id="fav">☆</button></div>
+ <div id="extra"></div><div id="multi"></div>
+ <div class="g" style="padding:10px"><div class="row"><select id="vs" style="max-width:190px"></select>
+  <label class="row m">Rate <input type="range" id="rate" min=".5" max="2" step=".1" value="1"></label>
+  <label class="row m">Pitch <input type="range" id="pitch" min=".5" max="2" step=".1" value="1"></label>
+  <label class="row m"><input type="checkbox" id="auto"> Auto-play</label></div>
+  <canvas class="w" id="tw" width="600" height="30" style="margin-top:8px"></canvas></div>
+ <div class="mono" id="stat"></div>
+</section>
+</main>
+
+<button id="fab" class="pri">💬 LinguaBot</button>
+
+<aside id="drawer" class="drawer g"><div class="row" style="padding:10px"><b class="logo">LinguaBot</b><span class="sp"></span><button id="bclr">🗑</button><button class="xc" data-c="drawer">✕</button></div>
+ <div class="chips" style="padding:0 10px" id="qchips"><span class="chip" data-q="Explain any idioms and why they were translated this way.">Idioms</span><span class="chip" data-q="Give three formal variations of the translation.">Formal ×3</span><span class="chip" data-q="Explain the grammatical structure of the translation.">Grammar</span><span class="chip" data-q="How do I pronounce this? Give a Latin-script guide.">Pronounce</span><span class="chip" data-q="Is anything culturally sensitive or ambiguous here?">Culture</span></div>
+ <div id="msgs"><div class="msg a">Ask me about the translation: idioms, grammar, variants, culture. 🤖</div></div>
+ <div class="row" style="padding:10px"><input id="ci" style="flex:1" placeholder="Ask LinguaBot…"><button class="pri" id="csend">Send</button></div></aside>
+
+<aside id="hdr" class="drawer g"><div class="row" style="padding:10px"><b class="logo">History</b><span class="sp"></span><button id="hexp">⬇ JSON</button><button id="hclr">🗑 Clear</button><button class="xc" data-c="hdr">✕</button></div>
+ <div style="padding:0 10px"><input id="hq" placeholder="Search…" style="width:100%"></div><div id="hlist"></div></aside>
+
+<div class="modal" id="modal"><div class="g">
+ <h3>⚙ Settings &amp; API Key</h3>
+ <small>Paste any supported key — provider and models are detected automatically. Stored AES-GCM encrypted in this browser only; sent only to that provider.</small>
+ <input id="ki" type="password" placeholder="gsk_… / sk-… / sk-ant-… / AIza… / sk-or-… / xai-…" style="width:100%;margin:10px 0 4px" autocomplete="off">
+ <div id="kdet" class="mono" style="margin-bottom:8px">Supported: Groq · OpenAI · Anthropic · Gemini · OpenRouter · xAI</div>
+ <div class="row"><button class="pri" id="ksave">Save &amp; connect</button><button id="kclr">Remove key</button></div>
+ <hr style="border-color:#fff2;margin:14px 0">
+ <label class="row">Temperature <input type="range" id="temp" min="0" max="1" step=".05"> <span id="tv" class="mono"></span></label>
+ <label class="row"><input type="checkbox" id="stream"> Stream output</label>
+ <label class="row"><input type="checkbox" id="autoTr"> Auto-translate when I stop typing</label>
+ <div class="row"><button id="tmJ">⬇ TM (JSON)</button><button id="tmX">⬇ TM (TMX)</button><button id="wipe">🗑 Wipe all data</button></div>
+ <div class="row" style="margin-top:12px"><button class="xc" data-c="modal">Close</button></div>
+ <p class="m" style="font-size:12px">Shortcuts: Ctrl+Enter translate · Alt+S swap · Esc close panels</p>
+</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+<script src="js/app.js" defer></script>
+</body></html>
