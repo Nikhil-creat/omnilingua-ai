@@ -1,6 +1,11 @@
-# OmniLingua AI v3
+# OmniLingua AI v4
 Agentic, voice-enabled, multi-provider AI translation platform. 100% static: deploys on GitHub Pages.
 Created by Nikhil Chary Sriramoju.
+
+## New in v4
+- 🛰 **Edge AI**: on-device translation with no key (Chrome built-in Translator API, where supported)
+- 🧬 Neural glossary search (on-device) · 🔮 AI Vision OCR · 🗣 Face-to-face interpreter · 📺 Live captions
+- 🧪 MQM quality audit + one-tap fixes · 🧠 term mining · 🔐 passphrase vault lock · 💾 backup/restore · PWA share target
 
 ## Highlights
 - **Any key works:** Groq, OpenAI, Anthropic, Gemini, OpenRouter, xAI auto-detected; models auto-loaded; multi-key vault with one-tap switch and automatic failover

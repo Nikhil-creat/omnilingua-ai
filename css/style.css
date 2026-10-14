@@ -84,3 +84,8 @@ a{color:var(--c)}
 .modal h4{margin:12px 0 6px;color:var(--c);font-size:13px}
 .hc{--m:#d5dcf2}.hc .g,.hc .modal>.g{background:#000d;border-color:#fffa}.hc .chip,.hc select,.hc input,.hc textarea,.hc button,.hc .btn{border-color:#fff9}
 @media print{#bg,nav,#fab,.drawer,.modal{display:none!important}}
+
+.pan{position:relative}.pan:before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(380px circle at var(--mx,50%) var(--my,-20%),color-mix(in srgb,var(--c) 11%,transparent),transparent 70%)}
+#flow{height:64px;background:transparent}
+.lockov{position:fixed;inset:0;background:#05070d;display:flex;align-items:center;justify-content:center;z-index:99;padding:10px}.lockov>.g{padding:18px;width:min(380px,100%);background:#0a0f1d}
+#modes button{font-size:13px;padding:8px 4px}

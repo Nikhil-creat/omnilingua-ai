@@ -8,6 +8,8 @@
  const unmaskPII=(t,m)=>t.replace(/\[\[\s*P(\d+)\s*\]\]/g,(x,i)=>m.map[i-1]??x);
  const csvFirstCol=l=>{const m=l.match(/^"((?:[^"]|"")*)"/);return m?m[1].replace(/""/g,'"'):l.split(",")[0].trim()};
  const toCSV=rows=>rows.map(r=>r.map(c=>`"${String(c??"").replace(/"/g,'""')}"`).join(",")).join("\n");
- const api={detect,chunk,maskPII,unmaskPII,csvFirstCol,toCSV};
+ /* MQM quality score: minor=1, major=5, critical=25 penalty points per max(words,20) */
+ const mqmScore=(errs,words)=>{const w={minor:1,major:5,critical:25};const pen=(errs||[]).reduce((s,e)=>s+(w[String(e.severity).toLowerCase()]||1),0);return Math.max(0,Math.round(100-pen*100/Math.max(words,20)))};
+ const api={detect,chunk,maskPII,unmaskPII,csvFirstCol,toCSV,mqmScore};
  if(typeof module!=="undefined"&&module.exports)module.exports=api;else root.OLLib=api;
 })(typeof window!=="undefined"?window:globalThis);

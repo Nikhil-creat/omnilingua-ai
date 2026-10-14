@@ -18,3 +18,6 @@ test("unmask tolerates spacing from the model",()=>{
 test("CSV helpers",()=>{
  assert.equal(L.csvFirstCol('"Hello, world",x'),"Hello, world");assert.equal(L.csvFirstCol("a,b"),"a");
  assert.equal(L.toCSV([["a",'say "hi"']]),'"a","say ""hi"""')});
+test("MQM score weights severities and floors at 0",()=>{
+ assert.equal(L.mqmScore([],100),100);assert.equal(L.mqmScore([{severity:"major"}],100),95);
+ assert.equal(L.mqmScore([{severity:"minor"},{severity:"minor"}],100),98);assert.equal(L.mqmScore([{severity:"critical"}],10),0)});

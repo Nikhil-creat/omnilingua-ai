@@ -5,3 +5,7 @@
 - Share links embed your source text in the URL fragment (not sent to any server, but visible to whoever has the link).
 - When self-hosting, add security headers (CSP, X-Content-Type-Options, Referrer-Policy) at your web server and keep dependencies pinned (Tesseract.js 5.1.1, pdf.js 3.11.174).
 - Report issues privately to the repository owner.
+- Passphrase lock derives the key with PBKDF2-SHA256 (250,000 iterations) and removes the device-only key. A forgotten passphrase cannot be recovered: remove the key via Wipe and enter it again. Unlocked keys sit in page memory until lock/idle (10 min).
+- Edge mode runs entirely in the browser; the on-device model is downloaded once by the browser itself.
+- Neural search downloads an embedding model from the Hugging Face CDN once; text is embedded locally.
+- Backups exclude all keys, vaults and lock data.

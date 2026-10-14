@@ -1,1 +1,45 @@
-{"name":"OmniLingua AI","short_name":"OmniLingua","start_url":"./","scope":"./","display":"standalone","background_color":"#0a0f1d","theme_color":"#0a0f1d","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
+{
+ "name": "OmniLingua AI",
+ "short_name": "OmniLingua",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "background_color": "#0a0f1d",
+ "theme_color": "#0a0f1d",
+ "icons": [
+  {
+   "src": "icon.svg",
+   "sizes": "any",
+   "type": "image/svg+xml",
+   "purpose": "any maskable"
+  }
+ ],
+ "share_target": {
+  "action": "./",
+  "method": "GET",
+  "params": {
+   "title": "title",
+   "text": "text",
+   "url": "url"
+  }
+ },
+ "shortcuts": [
+  {
+   "name": "Face-to-face interpreter",
+   "url": "./?action=conversation"
+  },
+  {
+   "name": "Live captions",
+   "url": "./?action=captions"
+  },
+  {
+   "name": "Batch translate",
+   "url": "./?action=batch"
+  }
+ ],
+ "categories": [
+  "productivity",
+  "utilities"
+ ],
+ "description": "Agentic, on-device-capable AI translator"
+}

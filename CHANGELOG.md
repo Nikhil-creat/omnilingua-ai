@@ -1,4 +1,13 @@
 # Changelog
+## 4.0.0
+- Edge AI mode: translate with the browser's built-in on-device Translator + LanguageDetector (no key, no data leaves the device) where supported
+- Neural semantic glossary search (transformers.js, on-device MiniLM embeddings), blended with the n-gram index
+- AI Vision OCR via multimodal models (handwriting, complex scripts) with automatic fallback to Tesseract
+- Face-to-face interpreter (two-way voice) and Live captions with screen wake-lock
+- MQM quality audit with one-tap fixes; terminology mining into the translation memory
+- Passphrase vault lock (PBKDF2 250k + AES-GCM), lock-now and 10-minute idle auto-lock
+- Animated agent-flow visualisation, pointer spotlight, optional sound/haptics
+- PWA share target (share text from other apps) + home-screen shortcuts; workspace backup/restore; WhatsApp share
 ## 3.0.1
 - Smarter default model: ranks by capability, never auto-picks tiny/4K-context models (e.g. allam-2-7b); Groq defaults updated to gpt-oss-120b
 - Context-overflow recovery: auto-switch to a larger model, then chunked fast mode; small-model aware chunking

@@ -17,7 +17,7 @@ const S={temp:.3,stream:true,auto:false,theme:"cyber",mode:"agentic",...LS.g("ol
 const TH={cyber:["#00f0ff","#b026ff"],matrix:["#2dff9a","#00b3ff"],solar:["#ffb020","#ff2d95"],ice:["#7cc4ff","#d6e8ff"]};let ACC="#00f0ff";
 function setTheme(n){S.theme=n;const[a,b]=TH[n];ACC=a;const r=document.documentElement.style;r.setProperty("--c",a);r.setProperty("--p",b);saveS()}
 Object.entries(TH).forEach(([n,[a,b]])=>{const d=document.createElement("button");d.className="dot";d.title=n;d.style.background=`linear-gradient(135deg,${a},${b})`;d.onclick=()=>setTheme(n);$("dots").append(d)});setTheme(S.theme);
-function setMode(m){S.mode=m;saveS();document.querySelectorAll("#modes button").forEach(b=>b.classList.toggle("on",b.dataset.m===m));$("go").textContent={fast:"⚡ Translate (Fast)",agentic:"⚡ Translate (Agentic)",deep:"⚡ Translate (Deep verify)"}[m]}
+function setMode(m){S.mode=m;saveS();document.querySelectorAll("#modes button").forEach(b=>b.classList.toggle("on",b.dataset.m===m));$("go").textContent={fast:"⚡ Translate (Fast)",agentic:"⚡ Translate (Agentic)",deep:"⚡ Translate (Deep verify)",edge:"🛰 Translate (Edge, on-device)"}[m]}
 document.querySelectorAll("#modes button").forEach(b=>b.onclick=()=>setMode(b.dataset.m));setMode(S.mode);
 $("temp").value=S.temp;$("tv").textContent=S.temp;$("stream").checked=S.stream;$("autoTr").checked=S.auto;
 $("temp").oninput=e=>{S.temp=+e.target.value;$("tv").textContent=S.temp;saveS()};$("stream").onchange=e=>{S.stream=e.target.checked;saveS()};$("autoTr").onchange=e=>{S.auto=e.target.checked;saveS()};
@@ -65,7 +65,7 @@ $("model").onchange=()=>LS.s("ol_m_"+P,$("model").value);
 const te=new TextEncoder(),td=new TextDecoder(),b64=b=>btoa(String.fromCharCode(...new Uint8Array(b))),ub=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 async function ck(){let r=LS.g("ol_k",null);if(!r){const k=await crypto.subtle.generateKey({name:"AES-GCM",length:256},true,["encrypt","decrypt"]);r=b64(await crypto.subtle.exportKey("raw",k));LS.s("ol_k",r)}return crypto.subtle.importKey("raw",ub(r),"AES-GCM",false,["encrypt","decrypt"])}
 async function saveKey(v){const iv=crypto.getRandomValues(new Uint8Array(12));LS.s("ol_v",b64(iv)+"."+b64(await crypto.subtle.encrypt({name:"AES-GCM",iv},await ck(),te.encode(v))));KEY=v}
-async function loadKey(){try{const s=LS.g("ol_v",null);if(s){const[i,c]=s.split(".");KEY=td.decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:ub(i)},await ck(),ub(c)))}}catch{}await connect()}
+async function loadKey(){if(LS.g("ol_lock",0)&&!window.OLX_UNLOCKED){KEY="";return connect()}try{const s=LS.g("ol_v",null);if(s){const[i,c]=s.split(".");KEY=td.decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:ub(i)},await ck(),ub(c)))}}catch{}await connect()}
 const openSet=()=>$("modal").style.display="flex";
 $("ki").oninput=e=>{const p=detect(e.target.value.trim());$("kdet").textContent=p?"✅ Detected: "+PROV[p].name+" (model list will auto-load)":(e.target.value?"❓ Unknown key format":"Supported: Groq · OpenAI · Anthropic · Gemini · OpenRouter · xAI")};
 $("ksave").onclick=async()=>{const v=$("ki").value.trim();if(!v)return;if(!detect(v)){toast("Unknown key format");return}await saveKey(v);$("ki").value="";$("modal").style.display="none";await connect();toast("Connected to "+PROV[P].name)};
@@ -101,7 +101,7 @@ function parseTM(n,txt){let e=[];try{if(n.endsWith(".json")){const j=JSON.parse(
 const addTM=a=>{a.forEach(t=>TM.push({t,v:vec(t)}));tmUpd()};
 $("gl").onchange=async e=>{const f=e.target.files[0];if(!f)return;addTM(parseTM(f.name.toLowerCase(),await f.text()));toast("Glossary indexed")};
 $("qtb").onclick=()=>{const v=$("qt").value.trim();if(!v.includes("=>"))return toast("Use: source => target");addTM([v]);$("qt").value="";toast("Term added")};
-const retrieve=q=>{if(!TM.length)return"";const qv=vec(q);return TM.map(e=>({e,s:cos(qv,e.v)})).sort((a,b)=>b.s-a.s).slice(0,6).filter(x=>x.s>.12).map(x=>"- "+x.e.t).join("\n")};
+const retrieve=q=>{if(!TM.length)return"";const qv=vec(q),nq=window.OLX&&OLX.q;return TM.map(e=>({e,s:nq&&e.nv?.35*cos(qv,e.v)+.65*e.nv.reduce((a,x,i)=>a+x*nq[i],0):cos(qv,e.v)})).sort((a,b)=>b.s-a.s).slice(0,6).filter(x=>x.s>(nq?.2:.12)).map(x=>"- "+x.e.t).join("\n")};
 const dl=(n,txt,type="text/plain")=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=n;a.click()};
 const tmPairs=()=>TM.map(e=>e.t.split(" => "));
 $("tmExp").onclick=$("tmJ").onclick=()=>dl("translation-memory.json",JSON.stringify(tmPairs().map(([s,t])=>({source:s,target:t})),null,2),"application/json");
@@ -109,17 +109,18 @@ $("tmX").onclick=()=>dl("translation-memory.tmx",`<?xml version="1.0"?><tmx vers
 
 /* ---------- agentic pipeline ---------- */
 const PIPS=["Analyze","Draft","Critique","Refine","Verify"];$("pips").innerHTML=PIPS.map(p=>`<div class="pip">${p}</div>`).join("");
-const setPips=(a,done=[])=>[...$("pips").children].forEach((e,i)=>e.className="pip"+(i===a?" act":done.includes(i)||i<a?" done":""));
+let setPips=(a,done=[])=>[...$("pips").children].forEach((e,i)=>e.className="pip"+(i===a?" act":done.includes(i)||i<a?" done":""));
 const step=(i,t)=>{setPips(i);$("steps").textContent=`${i+1}/${PIPS.length} ${t}`};
 let last={src:"",out:"",from:"",to:"",dom:"",conf:null,id:null};
 const chunk=OLLib.chunk;
 function ctxStr(an,text){const c=ctxBase(an,text);return c+(/\[\[P\d+\]\]/.test(text)?" Keep placeholders like [[P1]] exactly unchanged in the output.":"")+(S.custom?`\nCustom instructions from the user: ${S.custom}`:"")}
 function ctxBase(an,text){const mem=retrieve(text);const tone=$("tone").value,dm=$("domainSel").value;
  return `Domain: ${dm!=="auto"?dm:an.domain||"General"}; register: ${tone!=="auto"?tone:an.register||"neutral"}.`+(an.strategy?` Strategy: ${an.strategy}.`:"")+(an.idioms?.length?` Translate these idioms by meaning: ${JSON.stringify(an.idioms)}.`:"")+(/-->/.test(text)?" This is subtitle text: keep numbering and timestamps unchanged, translate only the dialogue.":"")+(mem?`\nMANDATORY terminology (translation memory):\n${mem}`:""),mem}
-async function quick(text,to){const pii=$("pii")?.checked?OLLib.maskPII(text):null,t=pii?pii.text:text;const r=await llm([{role:"system",content:`You are an expert translator. Translate into ${to}. Output only the translation. ${ctxStr({},t)}`},{role:"user",content:t}]);return pii?OLLib.unmaskPII(r,pii):r}
+async function quick(text,to){if(S.mode==="edge"&&window.OLX&&OLX.edgeOK)return OLX.edgeQuick(text,to);const pii=$("pii")?.checked?OLLib.maskPII(text):null,t=pii?pii.text:text;const r=await llm([{role:"system",content:`You are an expert translator. Translate into ${to}. Output only the translation. ${ctxStr({},t)}`},{role:"user",content:t}]);return pii?OLLib.unmaskPII(r,pii):r}
 let forceFast=false;
 async function translate(){
  const raw=$("in").value.trim();if(!raw||$("go").disabled)return;const pii=$("pii")?.checked?OLLib.maskPII(raw):null,text=pii?pii.text:raw;const to=$("tgt").value,from=$("src").value;let mode=S.mode;
+if(mode==="edge"&&window.OLX)return OLX.edge(raw,from,to);
  const small=/allam|\b[1-8]b\b|[-_][1-8]b[-_]|gemma/i.test($("model").value);if(forceFast)mode="fast";if(text.length>(small?1400:3500)&&mode!=="fast"){mode="fast";toast("Long text → fast chunked mode")}
  $("go").disabled=true;const out=$("out");out.textContent="";out.dir=["Arabic","Urdu"].includes(to)?"rtl":"ltr";$("extra").innerHTML="";$("multi").innerHTML="";$("conf").style.width="0";$("cs").textContent="confidence";setPips(-1);
  try{let an={};

@@ -7,6 +7,7 @@ Static, serverless PWA. No backend: the browser calls the AI provider directly w
 | `js/lib.js` | Pure helpers (provider detection, chunking, PII masking, CSV). Unit-tested in Node |
 | `js/app.js` | Core: provider client, key encryption, RAG memory, agentic pipeline, OCR/PDF, voice, LinguaBot |
 | `js/pro.js` | Enterprise layer: vault + failover, audit log, analytics, batch, arena, palette, diagnostics |
+| `js/v4.js` | Advanced layer: Edge AI, neural RAG, vision OCR, interpreter/captions, MQM audit, passphrase vault, flow viz |
 | `sw.js`, `manifest.json` | Offline app shell and installability |
 
 ## Request flow
@@ -17,3 +18,12 @@ Static, serverless PWA. No backend: the browser calls the AI provider directly w
 5. Placeholders are restored locally; result is stored in history, audit log and analytics
 
 `pro.js` extends `app.js` by wrapping `llm`, `saveKey`, `connect` and `addHist`; it needs no changes to the core.
+
+## Load order
+`lib.js` -> `app.js` -> `pro.js` -> `v4.js` (classic scripts sharing one global scope). Each layer wraps functions from the one before it (`llm`, `translate`, `saveKey`, `ck`, `addHist`, `setPips`, `ocrImage`), so core files stay untouched by add-ons.
+
+## Translation engines
+| Mode | Engine | Needs key |
+|---|---|---|
+| Fast / Agentic / Deep | Cloud LLM via provider adapter | yes |
+| Edge | Browser built-in Translator API | no |
