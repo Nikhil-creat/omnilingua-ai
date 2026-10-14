@@ -1,6 +1,6 @@
 {
   "name": "omnilingua-ai",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Agentic, voice-enabled, multi-provider AI translation platform (static PWA)",
   "private": true,
   "license": "MIT",

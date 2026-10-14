@@ -31,12 +31,12 @@ $("temp").oninput=e=>{S.temp=+e.target.value;$("tv").textContent=S.temp;saveS()}
 
 /* ---------- providers & key auto-detect ---------- */
 const PROV={
- groq:{name:"Groq",base:"https://api.groq.com/openai/v1",rpm:30,json:true,pref:["llama-3.3-70b-versatile","llama-3.1-8b-instant"]},
+ groq:{name:"Groq",base:"https://api.groq.com/openai/v1",rpm:30,json:true,pref:["openai/gpt-oss-120b","llama-3.3-70b-versatile","openai/gpt-oss-20b","moonshotai/kimi-k2-instruct-0905","meta-llama/llama-4-scout-17b-16e-instruct","qwen/qwen3-32b","llama-3.1-8b-instant"]},
  openai:{name:"OpenAI",base:"https://api.openai.com/v1",rpm:60,json:true,pref:["gpt-4o-mini","gpt-4.1-mini","gpt-4o"]},
- gemini:{name:"Gemini",base:"https://generativelanguage.googleapis.com/v1beta/openai",rpm:15,json:true,pref:["gemini-2.0-flash","gemini-2.5-flash","gemini-1.5-flash"]},
+ gemini:{name:"Gemini",base:"https://generativelanguage.googleapis.com/v1beta/openai",rpm:15,json:true,pref:["gemini-2.5-flash","gemini-2.5-flash-lite","gemini-2.0-flash","gemini-1.5-flash"]},
  openrouter:{name:"OpenRouter",base:"https://openrouter.ai/api/v1",rpm:20,json:false,pref:["meta-llama/llama-3.3-70b-instruct:free","google/gemini-2.0-flash-exp:free"]},
  xai:{name:"xAI",base:"https://api.x.ai/v1",rpm:60,json:false,pref:["grok-3-mini","grok-2-latest"]},
- anthropic:{name:"Anthropic",base:"https://api.anthropic.com/v1",rpm:50,json:false,pref:["claude-sonnet-4-5","claude-haiku-4-5","claude-3-5-haiku-latest"]}};
+ anthropic:{name:"Anthropic",base:"https://api.anthropic.com/v1",rpm:50,json:false,pref:["claude-sonnet-5-5","claude-haiku-5-5","claude-sonnet-4-5","claude-haiku-4-5","claude-3-5-haiku-latest"]}};
 const detect=OLLib.detect;
 let KEY="",P=null,MODELS=[];
 const badge=(c,t)=>{$("prov").className="badge "+c;$("prov").textContent=t};
@@ -49,13 +49,14 @@ async function listModels(){
  if(P==="openai")ids=ids.filter(i=>/^(gpt|o\d|chatgpt)/.test(i));if(P==="gemini")ids=ids.filter(i=>/gemini|gemma/.test(i));if(P==="xai")ids=ids.filter(i=>/grok/.test(i));
  if(P==="openrouter")ids=[...ids.filter(i=>i.endsWith(":free")),...ids.filter(i=>!i.endsWith(":free"))].slice(0,80);
  return ids}
+const rank=(id,pref)=>{const i=pref.indexOf(id);if(i>=0)return i;if(/allam|orpheus|safeguard|guard|\b[1-7]b\b|[-_][1-7]b[-_]/i.test(id))return 900;if(/compound/.test(id))return 200;return 100};
 async function connect(){
  if(!KEY){badge("bad","No API key");$("model").innerHTML="";return}
  P=detect(KEY);if(!P){badge("bad","Unknown key format");return}
  badge("wait",PROV[P].name+" · connecting…");let ok=true;
  try{MODELS=await listModels()}catch(e){ok=false;MODELS=[];badge("bad",PROV[P].name+" · "+e.message)}
  const pref=PROV[P].pref;if(!MODELS.length)MODELS=[...pref];
- MODELS.sort((a,b)=>{const x=pref.indexOf(a),y=pref.indexOf(b);return(x<0?99:x)-(y<0?99:y)});
+ MODELS.sort((a,b)=>rank(a,pref)-rank(b,pref));
  const keep=LS.g("ol_m_"+P,null);$("model").innerHTML="";MODELS.forEach(m=>$("model").add(new Option(m,m)));$("model").value=MODELS.includes(keep)?keep:MODELS[0];
  if(ok)badge("ok","● "+PROV[P].name+" · "+MODELS.length+" models")}
 $("model").onchange=()=>LS.s("ol_m_"+P,$("model").value);
@@ -78,15 +79,15 @@ async function llm(messages,o={},model=null,retry=0){
  if(!KEY||!P){openSet();throw new Error("Add an API key in ⚙ Settings")}
  await take();model=model||$("model").value;const t0=performance.now(),stream=!!(o.stream&&S.stream),temp=o.temp??S.temp;let url,body,h;
  if(P==="anthropic"){const sys=messages.filter(m=>m.role==="system").map(m=>m.content).join("\n");url=PROV.anthropic.base+"/messages";h={...hdrs(),"content-type":"application/json"};body={model,max_tokens:4096,temperature:Math.min(1,temp),messages:messages.filter(m=>m.role!=="system"),stream};if(sys)body.system=sys}
- else{url=PROV[P].base+"/chat/completions";h={...hdrs(),"Content-Type":"application/json"};body={model,messages,temperature:temp,stream};if(o.json&&PROV[P].json)body.response_format={type:"json_object"}}
+ else{url=PROV[P].base+"/chat/completions";h={...hdrs(),"Content-Type":"application/json"};body={model,messages,temperature:temp,stream};if(o.json&&PROV[P].json)body.response_format={type:"json_object"};if(P==="groq"&&/^openai\/gpt-oss/.test(model))body.reasoning_effort="low"}
  let r;try{r=await fetch(url,{method:"POST",headers:h,body:JSON.stringify(body)})}catch(e){throw new Error("Network/CORS error talking to "+PROV[P].name)}
  if((r.status==429||r.status>=500)&&retry<2){await sleep(1500*(retry+1));const alt=PROV[P].pref.find(m=>m!==model&&MODELS.includes(m))||model;return llm(messages,o,retry?alt:model,retry+1)}
- if(!r.ok)throw new Error(PROV[P].name+" "+r.status+": "+(await r.text()).slice(0,200));
+ if(!r.ok){const tx=await r.text();if(r.status===400&&/context_length|reduce the length|too long/i.test(tx)&&retry<2){const pf=PROV[P].pref,alt=MODELS.filter(m=>m!==model&&rank(m,pf)<900).sort((a,b)=>rank(a,pf)-rank(b,pf))[0];if(alt){toast("Text too long for "+model+" → switching to "+alt);$("model").value=alt;return llm(messages,o,alt,retry+1)}}throw new Error(PROV[P].name+" "+r.status+": "+tx.slice(0,200))}
  let full="";
  if(!stream){const j=await r.json();full=P==="anthropic"?(j.content||[]).map(c=>c.text||"").join(""):(j.choices?.[0]?.message?.content||"")}
  else{const rd=r.body.getReader();let buf="";for(;;){const{done,value}=await rd.read();if(done)break;buf+=td.decode(value,{stream:true});const ls=buf.split("\n");buf=ls.pop();
-  for(const l of ls){if(!l.startsWith("data:")||l.includes("[DONE]"))continue;try{const j=JSON.parse(l.slice(5));full+=P==="anthropic"?(j.type==="content_block_delta"?j.delta?.text||"":""):(j.choices?.[0]?.delta?.content||"")}catch{}}o.onTok&&o.onTok(full)}}
- lastStat={ms:Math.round(performance.now()-t0),tok:Math.round(full.length/4),model};return full}
+  for(const l of ls){if(!l.startsWith("data:")||l.includes("[DONE]"))continue;try{const j=JSON.parse(l.slice(5));full+=P==="anthropic"?(j.type==="content_block_delta"?j.delta?.text||"":""):(j.choices?.[0]?.delta?.content||"")}catch{}}o.onTok&&o.onTok(full.replace(/<think>[\s\S]*?(<\/think>|$)/g,"").trim())}}
+ full=full.replace(/<think>[\s\S]*?<\/think>/g,"").trim();lastStat={ms:Math.round(performance.now()-t0),tok:Math.round(full.length/4),model};return full}
 const J=s=>{const m=(s||"").match(/\{[\s\S]*\}/);try{return JSON.parse(m?m[0]:s)}catch{return{}}};
 
 /* ---------- RAG translation memory: hashed n-gram vectors ---------- */
@@ -116,9 +117,10 @@ function ctxStr(an,text){const c=ctxBase(an,text);return c+(/\[\[P\d+\]\]/.test(
 function ctxBase(an,text){const mem=retrieve(text);const tone=$("tone").value,dm=$("domainSel").value;
  return `Domain: ${dm!=="auto"?dm:an.domain||"General"}; register: ${tone!=="auto"?tone:an.register||"neutral"}.`+(an.strategy?` Strategy: ${an.strategy}.`:"")+(an.idioms?.length?` Translate these idioms by meaning: ${JSON.stringify(an.idioms)}.`:"")+(/-->/.test(text)?" This is subtitle text: keep numbering and timestamps unchanged, translate only the dialogue.":"")+(mem?`\nMANDATORY terminology (translation memory):\n${mem}`:""),mem}
 async function quick(text,to){const pii=$("pii")?.checked?OLLib.maskPII(text):null,t=pii?pii.text:text;const r=await llm([{role:"system",content:`You are an expert translator. Translate into ${to}. Output only the translation. ${ctxStr({},t)}`},{role:"user",content:t}]);return pii?OLLib.unmaskPII(r,pii):r}
+let forceFast=false;
 async function translate(){
  const raw=$("in").value.trim();if(!raw||$("go").disabled)return;const pii=$("pii")?.checked?OLLib.maskPII(raw):null,text=pii?pii.text:raw;const to=$("tgt").value,from=$("src").value;let mode=S.mode;
- if(text.length>3500&&mode!=="fast"){mode="fast";toast("Long text → fast chunked mode")}
+ const small=/allam|\b[1-8]b\b|[-_][1-8]b[-_]|gemma/i.test($("model").value);if(forceFast)mode="fast";if(text.length>(small?1400:3500)&&mode!=="fast"){mode="fast";toast("Long text → fast chunked mode")}
  $("go").disabled=true;const out=$("out");out.textContent="";out.dir=["Arabic","Urdu"].includes(to)?"rtl":"ltr";$("extra").innerHTML="";$("multi").innerHTML="";$("conf").style.width="0";$("cs").textContent="confidence";setPips(-1);
  try{let an={};
   if(mode!=="fast"){step(0,"Analyzing domain, register, idioms…");an=J(await llm([{role:"system",content:'Analyze the text. Return ONLY JSON {"language":"","domain":"Legal|Medical|Slang|Technical|Business|General|Literary|Academic","register":"formal|neutral|casual","idioms":[{"phrase":"","meaning":""}],"strategy":"one sentence"}'},{role:"user",content:text.slice(0,3000)}],{json:true,temp:0}))}
@@ -126,7 +128,7 @@ async function translate(){
   $("dom").textContent="domain: "+($("domainSel").value!=="auto"?$("domainSel").value:an.domain||"—");$("reg").textContent="register: "+($("tone").value!=="auto"?$("tone").value:an.register||"—");
   const sl=from==="auto"?(an.language||"auto-detected"):from;let fin="",sc=null;
   const sys=`You are an expert translator. Translate into ${to}. Output only the translation. ${ctx}`;
-  if(mode==="fast"){step(1,`Translating ${sl} → ${to}${mem?" (TM injected)":""}…`);const parts=chunk(text);for(const p of parts){const pre=fin;fin+=(fin?"\n\n":"")+await llm([{role:"system",content:sys},{role:"user",content:p}],{stream:true,onTok:t=>out.textContent=(pre?pre+"\n\n":"")+t});out.textContent=fin}setPips(5,[1])}
+  if(mode==="fast"){step(1,`Translating ${sl} → ${to}${mem?" (TM injected)":""}…`);const parts=chunk(text,small||forceFast?1000:2500);for(const p of parts){const pre=fin;fin+=(fin?"\n\n":"")+await llm([{role:"system",content:sys},{role:"user",content:p}],{stream:true,onTok:t=>out.textContent=(pre?pre+"\n\n":"")+t});out.textContent=fin}setPips(5,[1])}
   else{step(1,`Drafting ${sl} → ${to}${mem?" (TM injected)":""}…`);const draft=await llm([{role:"system",content:sys},{role:"user",content:text}]);
    step(2,"Critiquing for semantic drift…");const cr=J(await llm([{role:"system",content:'Critique the translation against the source for meaning, terminology and register. Return ONLY JSON {"score":0-100,"issues":["..."]}'},{role:"user",content:`SOURCE:\n${text}\n\nTRANSLATION (${to}):\n${draft}\n\n${ctx}`}],{json:true,temp:0}));
    step(3,"Refining…");fin=await llm([{role:"system",content:`Produce the final ${to} translation, fixing the listed issues. Output only the translation. ${ctx}`},{role:"user",content:`SOURCE:\n${text}\n\nDRAFT:\n${draft}\n\nISSUES: ${JSON.stringify(cr.issues||[])}`}],{stream:true,onTok:t=>out.textContent=t});out.textContent=fin;sc=Math.max(0,Math.min(100,+cr.score||85));
@@ -141,7 +143,7 @@ async function translate(){
   const extras=[...document.querySelectorAll("#chips .chip.on")].map(c=>c.textContent).filter(n=>n!==to);
   for(const n of extras){const d=document.createElement("div");d.className="card";d.innerHTML=`<b>${n}</b> <button class="sp2" style="padding:1px 8px">🔊</button><div>…</div>`;$("multi").append(d);try{const r=await quick(raw,n);d.lastChild.textContent=r;d.querySelector("button").onclick=()=>speak(r,n)}catch(e){d.lastChild.textContent="⚠ "+e.message}}
   if($("auto").checked)speak()
- }catch(e){$("out").textContent="⚠ "+e.message;$("steps").textContent="Pipeline error";setPips(-1)}
+ }catch(e){if(/context_length|reduce the length|too long/i.test(e.message)&&!forceFast){forceFast=true;$("go").disabled=false;toast("Context limit hit → retrying in chunked fast mode");try{return await translate()}finally{forceFast=false}}$("out").textContent="⚠ "+e.message;$("steps").textContent="Pipeline error";setPips(-1)}
  $("go").disabled=false}
 $("go").onclick=translate;
 const upd=()=>{$("cnt").textContent=$("in").value.length+" chars"};let tmr;
