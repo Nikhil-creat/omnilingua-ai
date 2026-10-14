@@ -7,9 +7,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 </head><body>
-<canvas id="bg"></canvas>
+<a class="skip" href="#in">Skip to translator</a>
+<canvas id="bg" aria-hidden="true"></canvas>
 <nav class="g">
- <span class="pulse"></span><span class="logo">OmniLingua AI</span>
+ <span class="pulse"></span><span class="logo">OmniLingua AI <small>v3</small></span>
  <span id="prov" class="badge bad">No API key</span>
  <select id="model" title="Model (auto-filled from your key)" style="max-width:190px"></select>
  <span class="sp"></span>
@@ -82,5 +83,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+<script src="js/lib.js" defer></script>
 <script src="js/app.js" defer></script>
+<script src="js/pro.js" defer></script>
 </body></html>

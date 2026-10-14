@@ -37,7 +37,7 @@ const PROV={
  openrouter:{name:"OpenRouter",base:"https://openrouter.ai/api/v1",rpm:20,json:false,pref:["meta-llama/llama-3.3-70b-instruct:free","google/gemini-2.0-flash-exp:free"]},
  xai:{name:"xAI",base:"https://api.x.ai/v1",rpm:60,json:false,pref:["grok-3-mini","grok-2-latest"]},
  anthropic:{name:"Anthropic",base:"https://api.anthropic.com/v1",rpm:50,json:false,pref:["claude-sonnet-4-5","claude-haiku-4-5","claude-3-5-haiku-latest"]}};
-const detect=k=>/^gsk_/.test(k)?"groq":/^sk-ant-/.test(k)?"anthropic":/^sk-or-/.test(k)?"openrouter":/^AIza/.test(k)?"gemini":/^xai-/.test(k)?"xai":/^sk-/.test(k)?"openai":null;
+const detect=OLLib.detect;
 let KEY="",P=null,MODELS=[];
 const badge=(c,t)=>{$("prov").className="badge "+c;$("prov").textContent=t};
 const hdrs=()=>P==="anthropic"?{"x-api-key":KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"}:{Authorization:"Bearer "+KEY,...(P==="openrouter"?{"X-Title":"OmniLingua AI"}:{})};
@@ -111,12 +111,13 @@ const PIPS=["Analyze","Draft","Critique","Refine","Verify"];$("pips").innerHTML=
 const setPips=(a,done=[])=>[...$("pips").children].forEach((e,i)=>e.className="pip"+(i===a?" act":done.includes(i)||i<a?" done":""));
 const step=(i,t)=>{setPips(i);$("steps").textContent=`${i+1}/${PIPS.length} ${t}`};
 let last={src:"",out:"",from:"",to:"",dom:"",conf:null,id:null};
-const chunk=(t,n=2500)=>{const out=[];let cur="";for(const p of t.split(/\n{2,}/)){if((cur+p).length>n&&cur){out.push(cur);cur=""}cur+=(cur?"\n\n":"")+p}if(cur)out.push(cur);return out};
-function ctxStr(an,text){const mem=retrieve(text);const tone=$("tone").value,dm=$("domainSel").value;
+const chunk=OLLib.chunk;
+function ctxStr(an,text){const c=ctxBase(an,text);return c+(/\[\[P\d+\]\]/.test(text)?" Keep placeholders like [[P1]] exactly unchanged in the output.":"")+(S.custom?`\nCustom instructions from the user: ${S.custom}`:"")}
+function ctxBase(an,text){const mem=retrieve(text);const tone=$("tone").value,dm=$("domainSel").value;
  return `Domain: ${dm!=="auto"?dm:an.domain||"General"}; register: ${tone!=="auto"?tone:an.register||"neutral"}.`+(an.strategy?` Strategy: ${an.strategy}.`:"")+(an.idioms?.length?` Translate these idioms by meaning: ${JSON.stringify(an.idioms)}.`:"")+(/-->/.test(text)?" This is subtitle text: keep numbering and timestamps unchanged, translate only the dialogue.":"")+(mem?`\nMANDATORY terminology (translation memory):\n${mem}`:""),mem}
-async function quick(text,to){const{0:c}=[ctxStr({},text)];return llm([{role:"system",content:`You are an expert translator. Translate into ${to}. Output only the translation. ${c}`},{role:"user",content:text}])}
+async function quick(text,to){const pii=$("pii")?.checked?OLLib.maskPII(text):null,t=pii?pii.text:text;const r=await llm([{role:"system",content:`You are an expert translator. Translate into ${to}. Output only the translation. ${ctxStr({},t)}`},{role:"user",content:t}]);return pii?OLLib.unmaskPII(r,pii):r}
 async function translate(){
- const text=$("in").value.trim();if(!text||$("go").disabled)return;const to=$("tgt").value,from=$("src").value;let mode=S.mode;
+ const raw=$("in").value.trim();if(!raw||$("go").disabled)return;const pii=$("pii")?.checked?OLLib.maskPII(raw):null,text=pii?pii.text:raw;const to=$("tgt").value,from=$("src").value;let mode=S.mode;
  if(text.length>3500&&mode!=="fast"){mode="fast";toast("Long text → fast chunked mode")}
  $("go").disabled=true;const out=$("out");out.textContent="";out.dir=["Arabic","Urdu"].includes(to)?"rtl":"ltr";$("extra").innerHTML="";$("multi").innerHTML="";$("conf").style.width="0";$("cs").textContent="confidence";setPips(-1);
  try{let an={};
@@ -133,11 +134,12 @@ async function translate(){
     const v=J(await llm([{role:"system",content:'Compare ORIGINAL and BACK-TRANSLATION for meaning loss. Return ONLY JSON {"fidelity":0-100,"notes":"short"}'},{role:"user",content:`ORIGINAL:\n${text}\n\nBACK:\n${back}`}],{json:true,temp:0}));
     if(v.fidelity!=null)sc=Math.round((sc+ +v.fidelity)/2);$("extra").innerHTML=`<div class="card"><b>↩ Verification</b> (fidelity ${v.fidelity??"?"}%)\n${esc(back)}\n<small>${esc(v.notes||"")}</small></div>`}
    setPips(5,[0,1,2,3,4])}
+  if(pii){fin=OLLib.unmaskPII(fin,pii);out.textContent=fin;$("extra").innerHTML=$("extra").innerHTML.replace(/\[\[P\d+\]\]/g,"");toast("🛡 Privacy Shield masked "+pii.map.length+" item(s)")}
   if(sc!=null){$("conf").style.width=sc+"%";$("cs").textContent=sc+"% confidence"}
   $("steps").textContent="✅ Done · "+(mode==="fast"?"Fast":mode==="deep"?"Analyze → Draft → Critique → Refine → Verify":"Analyze → Draft → Critique → Refine");
-  last={src:text,out:fin,from:sl,to,dom:an.domain||"",conf:sc,id:Date.now()};addHist(last);$("fav").textContent="☆";
+  last={src:raw,out:fin,from:sl,to,dom:an.domain||"",conf:sc,id:Date.now()};addHist(last);$("fav").textContent="☆";
   const extras=[...document.querySelectorAll("#chips .chip.on")].map(c=>c.textContent).filter(n=>n!==to);
-  for(const n of extras){const d=document.createElement("div");d.className="card";d.innerHTML=`<b>${n}</b> <button class="sp2" style="padding:1px 8px">🔊</button><div>…</div>`;$("multi").append(d);try{const r=await quick(text,n);d.lastChild.textContent=r;d.querySelector("button").onclick=()=>speak(r,n)}catch(e){d.lastChild.textContent="⚠ "+e.message}}
+  for(const n of extras){const d=document.createElement("div");d.className="card";d.innerHTML=`<b>${n}</b> <button class="sp2" style="padding:1px 8px">🔊</button><div>…</div>`;$("multi").append(d);try{const r=await quick(raw,n);d.lastChild.textContent=r;d.querySelector("button").onclick=()=>speak(r,n)}catch(e){d.lastChild.textContent="⚠ "+e.message}}
   if($("auto").checked)speak()
  }catch(e){$("out").textContent="⚠ "+e.message;$("steps").textContent="Pipeline error";setPips(-1)}
  $("go").disabled=false}

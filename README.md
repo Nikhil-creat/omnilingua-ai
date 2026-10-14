@@ -1,19 +1,19 @@
-# OmniLingua AI v2
-Agentic, voice-enabled, multi-provider AI translator. 100% static: runs on GitHub Pages, no build step.
+# OmniLingua AI v3
+Agentic, voice-enabled, multi-provider AI translation platform. 100% static: deploys on GitHub Pages.
+Created by Nikhil Chary Sriramoju.
 
-## Features
-- Paste ANY key: auto-detects Groq (gsk_), OpenAI (sk-), Anthropic (sk-ant-), Gemini (AIza), OpenRouter (sk-or-), xAI (xai-). Models are fetched from your key and the best one is pre-selected.
-- Modes: Fast, Agentic (Analyze>Draft>Critique>Refine), Deep (+ back-translation verification)
-- RAG translation memory (.json/.tmx/.csv/.txt), quick-add terms, save translations to TM, export JSON/TMX
-- OCR (25 languages) with scan overlay, camera capture, PDF text extraction, .txt/.srt/.vtt documents
-- Voice STT with waveform, Live Interpreter (speak > translate > speak), TTS with voice/rate/pitch
-- Multi-language compare, back-translate, romanize, variants, history + favorites, LinguaBot chat
-- 4 themes, animated neural background, installable PWA, offline app shell
+## Highlights
+- **Any key works:** Groq, OpenAI, Anthropic, Gemini, OpenRouter, xAI auto-detected; models auto-loaded; multi-key vault with one-tap switch and automatic failover
+- **Pipelines:** Fast / Agentic (Analyze>Draft>Critique>Refine) / Deep (+back-translation verification)
+- **Enterprise:** Privacy Shield (PII masking), audit log, analytics dashboard, batch translation, Model Arena, glossary compliance, presets, custom instructions
+- **Inputs:** text, live voice + interpreter mode, OCR (25 languages, camera), PDF, .txt/.srt/.vtt/.csv
+- **RAG translation memory:** .json/.tmx/.csv/.txt, quick-add, save to TM, export JSON/TMX
+- **UX:** command palette (Ctrl+K), history + favorites, LinguaBot, share link, print/PDF, 4 themes, PWA, accessibility options
 
-## Deploy (GitHub Pages)
-1. Create a repo, upload ALL files (keep the css/ and js/ folders).
-2. Settings > Pages > Deploy from branch > main / (root).
-3. Open https://USERNAME.github.io/REPO/
+## Deploy on GitHub Pages
+Upload everything (keep `css/` and `js/`), then Settings > Pages > Deploy from branch > main / root.
 
-## Docker
-dev: `docker compose --profile dev up --build`   prod: `docker compose --profile prod up --build -d`
+## Develop
+`npm run verify` (syntax + unit tests) | `npm run serve` | Docker: `docker compose --profile dev up --build`
+
+See ARCHITECTURE.md, SECURITY.md, CHANGELOG.md.

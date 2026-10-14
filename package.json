@@ -1,0 +1,14 @@
+{
+  "name": "omnilingua-ai",
+  "version": "3.0.0",
+  "description": "Agentic, voice-enabled, multi-provider AI translation platform (static PWA)",
+  "private": true,
+  "license": "MIT",
+  "author": "Nikhil Chary Sriramoju",
+  "scripts": {
+    "check": "node --check js/lib.js && node --check js/app.js && node --check js/pro.js && node --check sw.js",
+    "test": "node --test tests/lib.test.js",
+    "verify": "npm run check && npm test",
+    "serve": "npx live-server --port=8080"
+  }
+}

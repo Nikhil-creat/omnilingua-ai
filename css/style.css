@@ -77,3 +77,10 @@ label.row{cursor:pointer}input[type=checkbox]{width:auto}input[type=range]{paddi
 a{color:var(--c)}
 ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:#ffffff22;border-radius:9px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.skip{position:absolute;left:-999px;top:8px;z-index:99;background:var(--c);color:#04101f;padding:8px 12px;border-radius:8px}.skip:focus{left:8px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:8px}.stat{padding:10px;border-radius:12px;background:#0005;text-align:center;border:1px solid #ffffff14}.stat b{display:block;font-size:20px;color:var(--c)}
+.hi.sel{border-color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent)}
+.modal h4{margin:12px 0 6px;color:var(--c);font-size:13px}
+.hc{--m:#d5dcf2}.hc .g,.hc .modal>.g{background:#000d;border-color:#fffa}.hc .chip,.hc select,.hc input,.hc textarea,.hc button,.hc .btn{border-color:#fff9}
+@media print{#bg,nav,#fab,.drawer,.modal{display:none!important}}
