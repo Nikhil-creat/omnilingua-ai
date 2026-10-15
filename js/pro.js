@@ -1,5 +1,5 @@
 "use strict";
-/* OmniLingua AI v3: enterprise modules (vault + failover, audit log, analytics, batch, arena,
+/* Translator AI v3: enterprise modules (vault + failover, audit log, analytics, batch, arena,
    command palette, privacy shield UI, presets, diagnostics, share/print, accessibility) */
 (()=>{
 const log=LS.g("ol_log",[]);const rec=e=>{log.push(e);if(log.length>500)log.shift();LS.s("ol_log",log)};
@@ -29,7 +29,7 @@ llm=async function(messages,o={},model=null,retry=0){
   throw e}};
 let lastErr=0;const onErr=m=>{if(Date.now()-lastErr<5000)return;lastErr=Date.now();rec({t:Date.now(),p:P||"-",m:"runtime",ms:0,ok:0,err:String(m).slice(0,80)})};
 addEventListener("error",e=>onErr(e.message));addEventListener("unhandledrejection",e=>onErr(e.reason?.message||e.reason));
-const exportLog=()=>dl("omnilingua-audit-log.csv",OLLib.toCSV([["time","provider","model","latency_ms","chars","ok","error"],...log.map(x=>[new Date(x.t).toISOString(),x.p,x.m,x.ms,x.c||"",x.ok,x.err||""])]),"text/csv");
+const exportLog=()=>dl("translator-ai-audit-log.csv",OLLib.toCSV([["time","provider","model","latency_ms","chars","ok","error"],...log.map(x=>[new Date(x.t).toISOString(),x.p,x.m,x.ms,x.c||"",x.ok,x.err||""])]),"text/csv");
 
 /* ----- glossary compliance after each translation ----- */
 const _ah=addHist;addHist=e=>{_ah(e);try{const ps=retrieve(e.src).split("\n").map(l=>l.slice(2).split(" => ")).filter(p=>p[1]);if(ps.length){const ok=ps.filter(p=>e.out.toLowerCase().includes(p[1].trim().toLowerCase())).length;$("steps").textContent+=` · 📚 TM terms ${ok}/${ps.length}`}}catch{}};
@@ -56,8 +56,8 @@ const applyPreset=p=>{$("tgt").value=p.to;$("src").value=p.from;$("tone").value=
 const toggleHC=()=>{S.hc=!S.hc;saveS();applyA()};
 
 /* ----- share / print ----- */
-function share(){const src=last.src||$("in").value;if(!src)return toast("Nothing to share");const p=btoa(unescape(encodeURIComponent(JSON.stringify({t:src.slice(0,1500),f:$("src").value,to:$("tgt").value}))));const u=location.origin+location.pathname+"#s="+p;navigator.share?navigator.share({title:"OmniLingua AI",url:u}).catch(()=>{}):navigator.clipboard.writeText(u).then(()=>toast("Link copied (contains your text)"))}
-function printOut(){if(!need())return;const f=document.createElement("iframe");f.style.display="none";document.body.append(f);const d=f.contentDocument;d.open();d.write(`<html><head><title>OmniLingua translation</title><style>body{font:15px Georgia,serif;margin:40px}h2{font:600 12px Arial;color:#555;text-transform:uppercase}pre{white-space:pre-wrap;font:inherit}</style></head><body><h1>OmniLingua AI</h1><p>${esc(last.from)} → ${esc(last.to)} · ${new Date().toLocaleString()}</p><h2>Source</h2><pre>${esc(last.src)}</pre><h2>Translation</h2><pre>${esc(last.out)}</pre></body></html>`);d.close();setTimeout(()=>{f.contentWindow.print();setTimeout(()=>f.remove(),2000)},300)}
+function share(){const src=last.src||$("in").value;if(!src)return toast("Nothing to share");const p=btoa(unescape(encodeURIComponent(JSON.stringify({t:src.slice(0,1500),f:$("src").value,to:$("tgt").value}))));const u=location.origin+location.pathname+"#s="+p;navigator.share?navigator.share({title:"Translator AI",url:u}).catch(()=>{}):navigator.clipboard.writeText(u).then(()=>toast("Link copied (contains your text)"))}
+function printOut(){if(!need())return;const f=document.createElement("iframe");f.style.display="none";document.body.append(f);const d=f.contentDocument;d.open();d.write(`<html><head><title>Translator AI translation</title><style>body{font:15px Georgia,serif;margin:40px}h2{font:600 12px Arial;color:#555;text-transform:uppercase}pre{white-space:pre-wrap;font:inherit}</style></head><body><h1>Translator AI</h1><p>${esc(last.from)} → ${esc(last.to)} · ${new Date().toLocaleString()}</p><h2>Source</h2><pre>${esc(last.src)}</pre><h2>Translation</h2><pre>${esc(last.out)}</pre></body></html>`);d.close();setTimeout(()=>{f.contentWindow.print();setTimeout(()=>f.remove(),2000)},300)}
 try{const h=location.hash.match(/^#s=(.+)$/);if(h){const j=JSON.parse(decodeURIComponent(escape(atob(h[1]))));$("in").value=j.t;if(j.f)$("src").value=j.f;if(j.to)$("tgt").value=j.to;upd();voices();toast("Shared text loaded")}}catch{}
 const sb=document.createElement("button");sb.id="bShare";sb.textContent="🔗";sb.title="Share link";sb.onclick=share;$("fav").before(sb);
 

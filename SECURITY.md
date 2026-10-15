@@ -9,3 +9,4 @@
 - Edge mode runs entirely in the browser; the on-device model is downloaded once by the browser itself.
 - Neural search downloads an embedding model from the Hugging Face CDN once; text is embedded locally.
 - Backups exclude all keys, vaults and lock data.
+- GitHub Pages serves every project of a user from one origin (`nikhil-creat.github.io`), and browser storage is shared per origin. Other pages on that origin can read this app's stored data. Keep the vault passphrase lock on, or host this app on its own custom domain.

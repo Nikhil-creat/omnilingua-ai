@@ -1,5 +1,5 @@
 "use strict";
-/* OmniLingua AI v2: multi-provider, agentic, voice, RAG, OCR/PDF, PWA */
+/* Translator AI v2: multi-provider, agentic, voice, RAG, OCR/PDF, PWA */
 const $=id=>document.getElementById(id),sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const LS={g(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch{return d}},s(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}},r(k){try{localStorage.removeItem(k)}catch{}}};
 const toast=m=>{const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.append(t);setTimeout(()=>t.remove(),2600)};
@@ -40,7 +40,7 @@ const PROV={
 const detect=OLLib.detect;
 let KEY="",P=null,MODELS=[];
 const badge=(c,t)=>{$("prov").className="badge "+c;$("prov").textContent=t};
-const hdrs=()=>P==="anthropic"?{"x-api-key":KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"}:{Authorization:"Bearer "+KEY,...(P==="openrouter"?{"X-Title":"OmniLingua AI"}:{})};
+const hdrs=()=>P==="anthropic"?{"x-api-key":KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"}:{Authorization:"Bearer "+KEY,...(P==="openrouter"?{"X-Title":"Translator AI"}:{})};
 async function listModels(){
  const r=await fetch(PROV[P].base+"/models"+(P==="anthropic"?"?limit=100":""),{headers:hdrs()});if(!r.ok)throw new Error(r.status==401||r.status==403?"invalid key":"HTTP "+r.status);
  const j=await r.json();let ids=(j.data||j.models||[]).map(m=>(m.id||m.name||"").replace(/^models\//,""));
@@ -165,7 +165,7 @@ function addHist(e){H.unshift({...e});H=H.slice(0,100);saveH();renderH()}
 function renderH(){const q=$("hq").value.toLowerCase();$("hlist").innerHTML="";H.filter(h=>(h.src+h.out).toLowerCase().includes(q)).forEach(h=>{const d=document.createElement("div");d.className="hi";d.innerHTML=`<div>${esc(h.src.slice(0,90))}</div><div class="m">→ ${esc(h.out.slice(0,90))}</div><small>${h.from}→${h.to} · ${new Date(h.id).toLocaleString()} <span data-a="f">${h.fav?"★":"☆"}</span> <span data-a="d">🗑</span></small>`;
  d.onclick=ev=>{const a=ev.target.dataset.a;if(a==="f"){h.fav=!h.fav;saveH();renderH();return}if(a==="d"){H=H.filter(x=>x!==h);saveH();renderH();return}$("in").value=h.src;$("out").textContent=h.out;last={...h};upd();$("hdr").classList.remove("open")};$("hlist").append(d)})}
 renderH();$("hq").oninput=renderH;$("bHist").onclick=()=>$("hdr").classList.toggle("open");
-$("hexp").onclick=()=>dl("omnilingua-history.json",JSON.stringify(H,null,2),"application/json");$("hclr").onclick=()=>{if(confirm("Clear history?")){H=[];saveH();renderH()}};
+$("hexp").onclick=()=>dl("translator-ai-history.json",JSON.stringify(H,null,2),"application/json");$("hclr").onclick=()=>{if(confirm("Clear history?")){H=[];saveH();renderH()}};
 $("fav").onclick=()=>{const h=H.find(x=>x.id===last.id);if(!h)return;h.fav=!h.fav;$("fav").textContent=h.fav?"★":"☆";saveH();renderH()};
 
 /* ---------- files: image OCR (CNN-style scan), PDF, text ---------- */

@@ -1,4 +1,4 @@
-# OmniLingua AI v4
+# Translator AI v4.2
 Agentic, voice-enabled, multi-provider AI translation platform. 100% static: deploys on GitHub Pages.
 Created by Nikhil Chary Sriramoju.
 
@@ -22,3 +22,6 @@ Upload everything (keep `css/` and `js/`), then Settings > Pages > Deploy from b
 `npm run verify` (syntax + unit tests) | `npm run serve` | Docker: `docker compose --profile dev up --build`
 
 See ARCHITECTURE.md, SECURITY.md, CHANGELOG.md.
+
+## Editing the profile/branding
+About, Contact and footer details live in static HTML in `index.html` (search for `NIKHIL CHARY SRIRAMOJU`, `sriramojunikhil66@gmail.com`). Update the same values in the JSON-LD block in `<head>` and in `js/site.js` (vCard + mailto). Your phone number is intentionally not published.

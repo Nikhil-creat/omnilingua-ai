@@ -1,5 +1,5 @@
 "use strict";
-/* OmniLingua AI v4: Edge AI (on-device), neural RAG, AI-vision OCR, face-to-face interpreter,
+/* Translator AI v4: Edge AI (on-device), neural RAG, AI-vision OCR, face-to-face interpreter,
    live captions, MQM quality audit, term mining, passphrase vault (PBKDF2), agent-flow viz, PWA share/backup */
 (()=>{
 const U=window.OLUI,X=window.OLX={q:null,fi:-1,edgeOK:"Translator" in self};
@@ -82,7 +82,7 @@ bt2.onclick=async()=>{if(!need())return;const ex=$("extra");ex.innerHTML='<div c
 const _ck=ck;let lockKey=null,up=null;const isLock=()=>!!LS.g("ol_lock",0);
 ck=async()=>isLock()?(lockKey||await unlockUI()):_ck();
 const derive=async(pw,salt)=>crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:250000,hash:"SHA-256"},await crypto.subtle.importKey("raw",te.encode(pw),"PBKDF2",false,["deriveKey"]),{name:"AES-GCM",length:256},false,["encrypt","decrypt"]);
-function unlockUI(){if(up)return up;up=new Promise(res=>{const o=document.createElement("div");o.className="lockov";o.innerHTML='<div class="g"><h3 style="margin-top:0">🔐 OmniLingua locked</h3><small>Enter your passphrase to unlock your API keys.</small><input id="lkIn" type="password" style="width:100%;margin:10px 0" autocomplete="current-password" aria-label="Passphrase"><div id="lkErr" class="mono" style="color:var(--bad)"></div><button class="pri" id="lkGo" style="width:100%;margin-top:8px">Unlock</button></div>';document.body.append(o);
+function unlockUI(){if(up)return up;up=new Promise(res=>{const o=document.createElement("div");o.className="lockov";o.innerHTML='<div class="g"><h3 style="margin-top:0">🔐 Translator AI locked</h3><small>Enter your passphrase to unlock your API keys.</small><input id="lkIn" type="password" style="width:100%;margin:10px 0" autocomplete="current-password" aria-label="Passphrase"><div id="lkErr" class="mono" style="color:var(--bad)"></div><button class="pri" id="lkGo" style="width:100%;margin-top:8px">Unlock</button></div>';document.body.append(o);
   const go=async()=>{try{const k=await derive($("lkIn").value,ub(LS.g("ol_salt","")));const[i,c]=LS.g("ol_chk","").split(".");if(td.decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:ub(i)},k,ub(c)))!=="OK")throw 0;lockKey=k;o.remove();up=null;res(k)}catch{$("lkErr").textContent="Wrong passphrase"}};
   $("lkGo").onclick=go;$("lkIn").onkeydown=e=>{if(e.key==="Enter")go()};setTimeout(()=>$("lkIn").focus(),50)});return up}
 async function reseal(act,vault){LS.s("ol_vault",{});for(const[p,k]of Object.entries(vault))if(k)await U.vaultPut(p,k);if(act)await saveKey(act)}
@@ -99,7 +99,7 @@ let idle;const bump=()=>{clearTimeout(idle);if(isLock()&&KEY)idle=setTimeout(loc
 
 /* ---------- backup / restore / share ---------- */
 const SECRET=["ol_v","ol_vault","ol_k","ol_chk","ol_salt","ol_lock"];
-const backup=()=>{const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith("ol_")&&!SECRET.includes(k))o[k]=localStorage.getItem(k)}dl("omnilingua-backup.json",JSON.stringify({v:4,data:o},null,2),"application/json")};
+const backup=()=>{const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith("ol_")&&!SECRET.includes(k))o[k]=localStorage.getItem(k)}dl("translator-ai-backup.json",JSON.stringify({v:4,data:o},null,2),"application/json")};
 const wa=()=>{if(need())open("https://wa.me/?text="+encodeURIComponent(last.out),"_blank")};
 
 /* ---------- agent-flow visualisation, spotlight, sound/haptics ---------- */

@@ -1,4 +1,13 @@
 # Changelog
+## 4.2.0
+- Project renamed to **Translator AI** (repo `translator-ai`, site https://nikhil-creat.github.io/translator-ai/); all URLs, metadata, share card, docs and file names updated
+- Internal storage keys are unchanged, so saved settings, history and glossary carry over
+## 4.1.0
+- Full site shell: sticky header with scroll-spy menu, animated hero with live translation preview, feature grid, how-it-works, tech stack, projects, About the developer, FAQ, contact form, footer
+- Developer branding: "Designed & developed by NIKHIL CHARY SRIRAMOJU" in hero, About, footer, 404 page and social preview image
+- SEO and sharing: Open Graph/Twitter cards, JSON-LD (Person + SoftwareApplication), canonical URL, robots.txt, sitemap.xml, og.png
+- Save-contact vCard, legal dialogs (Privacy, Terms, AI disclaimer), back-to-top, branded 404 page
+- Mobile: workspace toolbar no longer sticks on small screens, hamburger menu
 ## 4.0.0
 - Edge AI mode: translate with the browser's built-in on-device Translator + LanguageDetector (no key, no data leaves the device) where supported
 - Neural semantic glossary search (transformers.js, on-device MiniLM embeddings), blended with the n-gram index

@@ -1,16 +1,56 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0a0f1d"><meta name="description" content="OmniLingua AI: agentic, voice-enabled, multi-provider AI translator">
-<title>OmniLingua AI</title>
+<meta name="theme-color" content="#0a0f1d"><meta name="description" content="Translator AI: agentic, voice-enabled, multi-provider AI translator">
+<title>Translator AI: Agentic AI Translator by Nikhil Chary Sriramoju</title>
+<meta name="author" content="Nikhil Chary Sriramoju">
+<meta name="keywords" content="AI translator, agentic AI, RAG, OCR, speech translation, Groq, OpenAI, Claude, Gemini, PWA, Nikhil Chary Sriramoju">
+<link rel="canonical" href="https://nikhil-creat.github.io/translator-ai/">
+<meta property="og:type" content="website"><meta property="og:title" content="Translator AI: Agentic AI Translator">
+<meta property="og:description" content="Type, speak or scan. On-device or cloud. Designed &amp; developed by Nikhil Chary Sriramoju.">
+<meta property="og:url" content="https://nikhil-creat.github.io/translator-ai/"><meta property="og:image" content="https://nikhil-creat.github.io/translator-ai/og.png">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Translator AI"><meta name="twitter:image" content="https://nikhil-creat.github.io/translator-ai/og.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Translator AI","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@id":"#nikhil"}},{"@type":"Person","@id":"#nikhil","name":"Nikhil Chary Sriramoju","email":"sriramojunikhil66@gmail.com","url":"https://github.com/Nikhil-creat","alumniOf":"Vaagdevi College of Engineering","address":{"@type":"PostalAddress","addressLocality":"Thorrur","addressRegion":"Telangana","addressCountry":"IN"},"knowsAbout":["Agentic AI","RAG","LLM engineering","Computer vision","Distributed systems","Data engineering"],"sameAs":["https://github.com/Nikhil-creat","https://in.linkedin.com/in/nikhil-chary-sriramoju-95041b38a","https://www.instagram.com/nikhil__sriramoju"]}]}</script>
 <link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 </head><body>
 <a class="skip" href="#in">Skip to translator</a>
 <canvas id="bg" aria-hidden="true"></canvas>
+<header class="site g" id="top">
+ <div class="wrap hrow">
+  <a class="brand" href="#top" aria-label="Translator AI home"><span class="pulse"></span><span class="logo">Translator AI</span></a>
+  <div class="menu" id="menu" role="navigation" aria-label="Primary">
+   <a href="#app">Translator</a><a href="#features">Features</a><a href="#how">How it works</a><a href="#tech">Tech</a><a href="#projects">Projects</a><a href="#about">About</a><a href="#faq">FAQ</a><a href="#contact">Contact</a>
+  </div>
+  <a class="btn pri hcta" href="#app">⚡ Launch</a>
+  <button id="burger" aria-label="Open menu" aria-expanded="false">☰</button>
+ </div>
+</header>
+
+<section class="hero wrap">
+ <div class="hero-l">
+  <div class="tagchip rv">✨ v4 · Agentic · On-device · Multi-provider</div>
+  <h1 class="rv">Translate <span class="grad">anything</span>.<br>Type, speak or scan.</h1>
+  <p class="lead rv">An agentic AI translation platform with RAG translation memory, OCR &amp; vision, a live interpreter and captions. Bring your own key (Groq, OpenAI, Claude, Gemini, OpenRouter, xAI) or translate fully on-device.</p>
+  <div class="row rv" style="gap:10px"><a class="btn pri big" href="#app">⚡ Open translator</a><a class="btn big" href="https://github.com/Nikhil-creat/translator-ai" target="_blank" rel="noopener">⭐ Star on GitHub</a></div>
+  <div class="stats4 rv"><div><b data-n="6">0</b><small>AI providers</small></div><div><b data-n="25">0</b><small>languages</small></div><div><b data-n="4">0</b><small>translation modes</small></div><div><b data-n="0">0</b><small>servers, no tracking</small></div></div>
+  <div class="byline rv">Designed &amp; developed by <b>NIKHIL CHARY SRIRAMOJU</b></div>
+ </div>
+ <div class="hero-r rv">
+  <div class="demo g" aria-hidden="true">
+   <div class="demo-bar"><i></i><i></i><i></i><span class="mono">translator-ai · live preview</span></div>
+   <div class="mono m" id="dmSrc">English</div><div class="demo-src">Hello, how are you?</div>
+   <div class="demo-arrow">↓ <span id="dmLang" class="tag">Hindi</span></div>
+   <div class="demo-out" id="dmOut">नमस्ते, आप कैसे हैं?</div>
+   <div class="row" style="margin-top:10px"><span class="tag">Agentic</span><span class="tag">RAG</span><span class="tag">Private</span></div>
+  </div>
+ </div>
+</section>
+
+<section id="app" class="appwrap">
 <nav class="g">
- <span class="pulse"></span><span class="logo">OmniLingua AI <small>v4</small></span>
+ <span class="pulse"></span><span class="logo">Translator AI <small>v4</small></span>
  <span id="prov" class="badge bad">No API key</span>
  <select id="model" title="Model (auto-filled from your key)" style="max-width:190px"></select>
  <span class="sp"></span>
@@ -55,6 +95,106 @@
  <div class="mono" id="stat"></div>
 </section>
 </main>
+</section>
+
+<section class="sec wrap" id="features"><div class="eyebrow rv">Features</div><h2 class="title rv">Everything a modern translator needs</h2><p class="sub rv">Built like a product: fast, private, accessible and extensible.</p>
+ <div class="fgrid">
+  <div class="fc g rv"><span class="ic">🧠</span><h3>Agentic pipeline</h3><p>Analyze → Draft → Critique → Refine → Verify. Domain, register and idioms handled before translating.</p></div>
+  <div class="fc g rv"><span class="ic">🔌</span><h3>Any AI provider</h3><p>Paste a key: Groq, OpenAI, Claude, Gemini, OpenRouter or xAI is auto-detected. Vault and automatic failover.</p></div>
+  <div class="fc g rv"><span class="ic">🛰</span><h3>Edge AI mode</h3><p>On-device translation with the browser's built-in model. No key, no data leaves your device.</p></div>
+  <div class="fc g rv"><span class="ic">📚</span><h3>RAG translation memory</h3><p>Upload glossaries (.json .tmx .csv). N-gram + optional neural search enforces your terminology.</p></div>
+  <div class="fc g rv"><span class="ic">📷</span><h3>OCR &amp; AI Vision</h3><p>Scan images, camera shots and PDFs in 25 languages. Vision models read handwriting and complex scripts.</p></div>
+  <div class="fc g rv"><span class="ic">🗣</span><h3>Voice interpreter</h3><p>Face-to-face two-way interpreter, live interpreter mode and big-text live captions.</p></div>
+  <div class="fc g rv"><span class="ic">🧪</span><h3>Quality audit</h3><p>MQM scoring with error list, one-tap fixes, back-translation and glossary compliance check.</p></div>
+  <div class="fc g rv"><span class="ic">🛡</span><h3>Privacy Shield</h3><p>Masks emails, phones, Aadhaar/PAN, cards and IPs before text leaves your browser.</p></div>
+  <div class="fc g rv"><span class="ic">🔐</span><h3>Encrypted vault</h3><p>AES-GCM key storage with optional passphrase lock (PBKDF2), lock-now and idle auto-lock.</p></div>
+  <div class="fc g rv"><span class="ic">📦</span><h3>Batch &amp; Arena</h3><p>Translate CSV/TXT/JSON in bulk, or pit two models against each other with an AI judge.</p></div>
+  <div class="fc g rv"><span class="ic">📊</span><h3>Analytics &amp; audit log</h3><p>Latency, success rate, tokens, languages and models, with CSV export.</p></div>
+  <div class="fc g rv"><span class="ic">📲</span><h3>Installable PWA</h3><p>Works offline as an app shell, accepts shared text from other apps, with home-screen shortcuts.</p></div>
+ </div></section>
+
+<section class="sec wrap" id="how"><div class="eyebrow rv">How it works</div><h2 class="title rv">From input to insight in four steps</h2>
+ <div class="steps4">
+  <div class="st4 g rv"><b>1</b><h3>Capture</h3><p>Type, paste, speak, scan an image, or load a PDF, .srt or CSV.</p></div>
+  <div class="st4 g rv"><b>2</b><h3>Protect &amp; enrich</h3><p>Privacy Shield masks identifiers. RAG injects your mandatory terminology.</p></div>
+  <div class="st4 g rv"><b>3</b><h3>Agent pipeline</h3><p>Analyze, draft, critique, refine and verify, in the cloud or fully on-device.</p></div>
+  <div class="st4 g rv"><b>4</b><h3>Deliver &amp; learn</h3><p>Speak, export, audit quality, and save approved terms back to memory.</p></div>
+ </div></section>
+
+<section class="sec wrap" id="tech"><div class="eyebrow rv">Tech stack</div><h2 class="title rv">Modern web platform, zero backend</h2>
+ <div class="chips big rv">
+  <span class="chip on">HTML5</span><span class="chip on">CSS3 · Glassmorphism</span><span class="chip on">JavaScript ES2022</span><span class="chip on">Web Speech API</span><span class="chip on">Web Crypto · AES-GCM · PBKDF2</span><span class="chip on">Service Worker · PWA</span><span class="chip on">Tesseract.js</span><span class="chip on">pdf.js</span><span class="chip on">transformers.js · ONNX</span><span class="chip on">Chrome Translator API</span><span class="chip on">Groq · OpenAI · Anthropic · Gemini · OpenRouter · xAI</span><span class="chip on">Docker · Nginx</span><span class="chip on">GitHub Pages</span><span class="chip on">Node test runner</span>
+ </div></section>
+
+<section class="sec wrap" id="projects"><div class="eyebrow rv">Projects</div><h2 class="title rv">More from the same developer</h2>
+ <div class="pgrid">
+  <a class="pc g rv" href="https://github.com/Nikhil-creat/translator-ai" target="_blank" rel="noopener"><span class="tag">This project</span><h3>Translator AI</h3><p>Agentic, voice-enabled, multi-provider translation platform with on-device mode.</p><small class="mono">JavaScript · PWA · RAG · OCR</small></a>
+  <a class="pc g rv" href="https://github.com/Nikhil-creat/distworkspace" target="_blank" rel="noopener"><span class="tag">Distributed systems</span><h3>DistWorkspace</h3><p>Raft-replicated KV store, CRDT text editor, Kafka-style broker and a leader-only fault-tolerant scheduler.</p><small class="mono">Python · FastAPI · Raft · CRDT</small></a>
+  <a class="pc g rv" href="https://github.com/Nikhil-creat/semanticache" target="_blank" rel="noopener"><span class="tag">AI infra</span><h3>Semanticache</h3><p>Semantic caching showcase for AI requests, hosted on GitHub Pages.</p><small class="mono">JavaScript · GitHub Pages</small></a>
+  <a class="pc g rv" href="https://github.com/Nikhil-creat/voyagr" target="_blank" rel="noopener"><span class="tag">PWA</span><h3>Voyagr</h3><p>AI trip planner delivered as an installable progressive web app.</p><small class="mono">PWA · JavaScript</small></a>
+ </div>
+ <div class="rv" style="text-align:center;margin-top:18px"><a class="btn" href="https://github.com/Nikhil-creat?tab=repositories" target="_blank" rel="noopener">All repositories on GitHub ↗</a></div></section>
+
+<section class="sec wrap" id="about"><div class="eyebrow rv">About the developer</div><h2 class="title rv">Designed &amp; developed by Nikhil Chary Sriramoju</h2>
+ <div class="agrid">
+  <div class="g pcard rv">
+   <div class="mono-av"><span>NCS</span></div>
+   <h3>NIKHIL CHARY SRIRAMOJU</h3>
+   <p class="m">B.Tech CSE (Final Year) · AI/ML &amp; Full-Stack Developer</p>
+   <p class="m">📍 Thorrur, Telangana, India</p>
+   <div class="row" style="justify-content:center;margin-top:10px">
+    <a class="btn pri" href="https://in.linkedin.com/in/nikhil-chary-sriramoju-95041b38a" target="_blank" rel="noopener">LinkedIn</a>
+    <a class="btn" href="https://github.com/Nikhil-creat" target="_blank" rel="noopener">GitHub</a>
+    <a class="btn" href="mailto:sriramojunikhil66@gmail.com">Email</a>
+    <button class="btn" id="vcf">⬇ Save contact</button>
+   </div>
+  </div>
+  <div class="adet">
+   <div class="g blk rv"><h4>🎓 Education</h4><div class="tl"><b>B.Tech, Computer Science &amp; Engineering</b><span>Vaagdevi College of Engineering</span><small class="mono">2023 – 2027 (final year)</small></div></div>
+   <div class="g blk rv"><h4>💼 Experience</h4>
+    <div class="tl"><b>Machine Learning Engineer Intern</b><span>Yuva Intern (NSDC)</span><small class="mono">Aug – Sep 2026</small></div>
+    <div class="tl"><b>Data Analytics Intern</b><span>Thiranex</span><small class="mono">Jul – Aug 2026</small></div></div>
+   <div class="g blk rv"><h4>🏅 Certifications</h4>
+    <div class="tl"><b>AI-Data Engineering &amp; Cloud Infrastructure Analyst</b><span>NASSCOM · Skill India Digital Hub</span></div>
+    <div class="tl"><b>AI Fundamentals</b><span>IBM SkillsBuild</span></div>
+    <div class="tl"><b>AI/ML Engineer Foundation</b><span>Reliance Foundation</span></div></div>
+   <div class="g blk rv"><h4>🧭 Focus areas</h4><div class="chips"><span class="chip on">Agentic AI</span><span class="chip on">RAG</span><span class="chip on">LLM engineering</span><span class="chip on">Computer vision / CNN</span><span class="chip on">Distributed systems</span><span class="chip on">Data engineering</span><span class="chip on">Full-stack</span></div></div>
+  </div>
+ </div></section>
+
+<section class="sec wrap" id="faq"><div class="eyebrow rv">FAQ</div><h2 class="title rv">Questions, answered</h2>
+ <div class="faq rv">
+  <details><summary>Is it free?</summary><p>The app is free and open source (MIT). You bring your own API key. Groq offers a free tier, and Edge mode needs no key at all.</p></details>
+  <details><summary>Where is my API key stored?</summary><p>Only in your browser, encrypted with AES-GCM. You can add a passphrase lock (PBKDF2). The key is sent only to the provider you choose.</p></details>
+  <details><summary>Does it work offline?</summary><p>The app shell loads offline. Cloud translation needs internet. Edge mode translates on-device where your browser supports the Translator API.</p></details>
+  <details><summary>Which languages are supported?</summary><p>25 including English, Hindi, Telugu, Tamil, Kannada, Malayalam, Bengali, Marathi, Gujarati, Urdu, Spanish, French, German, Japanese, Korean, Chinese and Arabic.</p></details>
+  <details><summary>How accurate are the translations?</summary><p>AI can make mistakes. Use Deep mode, the MQM Quality audit and your glossary, and have critical legal or medical text reviewed by a human.</p></details>
+  <details><summary>Which browser should I use?</summary><p>Chrome or Edge give the best experience (voice, captions, Edge AI). Safari works partly. Firefox lacks speech recognition.</p></details>
+  <details><summary>Can I self-host it?</summary><p>Yes: GitHub Pages as-is, or Docker with Nginx using the included Dockerfile and compose file.</p></details>
+ </div></section>
+
+<section class="sec wrap" id="contact"><div class="eyebrow rv">Contact</div><h2 class="title rv">Let's build something together</h2><p class="sub rv">Open to opportunities and collaborations. Send a message and it opens in your email app.</p>
+ <div class="cgrid">
+  <form class="g cform rv" id="cform"><label>Your name<input id="cfN" required autocomplete="name"></label><label>Your email<input id="cfE" type="email" required autocomplete="email"></label><label>Message<textarea id="cfM" required style="min-height:110px"></textarea></label><button class="btn pri" type="submit" style="justify-content:center">✉ Send message</button></form>
+  <div class="g clinks rv"><h4>Find me online</h4>
+   <a href="mailto:sriramojunikhil66@gmail.com">✉ sriramojunikhil66@gmail.com</a>
+   <a href="https://in.linkedin.com/in/nikhil-chary-sriramoju-95041b38a" target="_blank" rel="noopener">in · LinkedIn</a>
+   <a href="https://github.com/Nikhil-creat" target="_blank" rel="noopener">⌥ GitHub · Nikhil-creat</a>
+   <a href="https://www.instagram.com/nikhil__sriramoju" target="_blank" rel="noopener">◎ Instagram · nikhil__sriramoju</a>
+  </div>
+ </div></section>
+
+<footer class="foot g"><div class="wrap">
+ <div class="fcols">
+  <div><div class="logo" style="font-size:20px">Translator AI</div><p class="m">Agentic, voice-enabled, multi-provider AI translation platform. Private by design.</p></div>
+  <div><h4>Product</h4><a href="#app">Translator</a><a href="#features">Features</a><a href="#how">How it works</a><a href="#faq">FAQ</a></div>
+  <div><h4>Developer</h4><a href="#about">About</a><a href="#projects">Projects</a><a href="#contact">Contact</a><a href="https://github.com/Nikhil-creat" target="_blank" rel="noopener">GitHub</a></div>
+  <div><h4>Legal</h4><button class="lnk" data-legal="privacy">Privacy</button><button class="lnk" data-legal="terms">Terms</button><button class="lnk" data-legal="disclaimer">AI disclaimer</button></div>
+ </div>
+ <div class="fbot"><span>© 2026 <b>NIKHIL CHARY SRIRAMOJU</b>. All rights reserved · MIT License</span><span>Designed &amp; developed with ♥ in Telangana, India · v4.2</span></div>
+</div></footer>
+<button id="toTop" aria-label="Back to top" title="Back to top">↑</button>
+
 
 <button id="fab" class="pri">💬 LinguaBot</button>
 
@@ -87,4 +227,5 @@
 <script src="js/app.js" defer></script>
 <script src="js/pro.js" defer></script>
 <script src="js/v4.js" defer></script>
+<script src="js/site.js" defer></script>
 </body></html>

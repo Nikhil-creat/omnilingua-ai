@@ -1,10 +1,10 @@
 services:
-  omnilingua-dev:
+  translator-ai-dev:
     build: { context: ., target: dev }
     ports: ["8080:8080"]
     volumes: [".:/app"]
     profiles: ["dev"]
-  omnilingua-prod:
+  translator-ai-prod:
     build: { context: ., target: prod }
     ports: ["80:80"]
     restart: unless-stopped

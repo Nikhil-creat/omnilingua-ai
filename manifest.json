@@ -1,6 +1,6 @@
 {
- "name": "OmniLingua AI",
- "short_name": "OmniLingua",
+ "name": "Translator AI",
+ "short_name": "Translator AI",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",
@@ -41,5 +41,6 @@
   "productivity",
   "utilities"
  ],
- "description": "Agentic, on-device-capable AI translator"
+ "description": "Agentic, on-device-capable AI translator",
+ "author": "Nikhil Chary Sriramoju"
 }

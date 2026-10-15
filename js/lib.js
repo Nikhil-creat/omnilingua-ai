@@ -1,4 +1,4 @@
-/* OmniLingua AI: pure, unit-tested helpers (browser global OLLib + Node module) */
+/* Translator AI: pure, unit-tested helpers (browser global OLLib + Node module) */
 (function(root){
  const detect=k=>/^gsk_/.test(k)?"groq":/^sk-ant-/.test(k)?"anthropic":/^sk-or-/.test(k)?"openrouter":/^AIza/.test(k)?"gemini":/^xai-/.test(k)?"xai":/^sk-/.test(k)?"openai":null;
  const chunk=(t,n=2500)=>{const out=[];let cur="";for(const p of t.split(/\n{2,}/)){if((cur+p).length>n&&cur){out.push(cur);cur=""}cur+=(cur?"\n\n":"")+p}if(cur)out.push(cur);return out};
